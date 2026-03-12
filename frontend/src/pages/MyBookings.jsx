@@ -14,7 +14,7 @@ function MyBookings() {
         <Button
           variant="outlined"
           sx={{ textTransform: "none" }}
-          onClick={() => navigate("/home")}
+          onClick={() => navigate("/")}
         >
           Book New Jouney
         </Button>
@@ -33,7 +33,7 @@ function MyBookings() {
         <Button
           variant="contained"
           size="large"
-          onClick={() => navigate("/home")}
+          onClick={() => navigate("/")}
           sx={{ borderRadius: "12px", px: 4,  textTransform : "none"}}
         >
           Explore Buses

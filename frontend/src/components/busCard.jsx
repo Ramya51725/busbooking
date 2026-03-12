@@ -1,9 +1,12 @@
 import React from "react";
 import { Paper,Button ,Container} from "@mui/material";
 import StarIcon from "@mui/icons-material/Star";
+import { useNavigate } from "react-router-dom";
 
 
 function BusCard({type,rating,departureTime,arrivalTime,duration,route,busName,price}) {
+
+  const navigate = useNavigate()
   return (
     <div>
       
@@ -31,8 +34,8 @@ function BusCard({type,rating,departureTime,arrivalTime,duration,route,busName,p
           <div>
             <h2>{route}</h2>
           </div>
-          <Button variant="contained">
-            select seat
+          <Button variant="contained" onClick={()=>navigate("/seats")}>
+            select seat 
           </Button>
         </div>         
       </Paper>

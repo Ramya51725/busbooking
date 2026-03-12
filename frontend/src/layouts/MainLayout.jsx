@@ -11,9 +11,7 @@ function MainLayout() {
             <li>NextStop</li>
           </div>
           <div className="flex gap-20">
-            <li>
-              <Link to="/home">Home</Link>
-            </li>
+
             <li>
               <Link to="/mybooking">My Bookings</Link>
             </li>
