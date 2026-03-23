@@ -1,8 +1,11 @@
 import { Container, Paper, TextField, Button, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import { useContext } from "react";
+import { SeatContext } from "../context/SeatContext";
 
 function PassengerDetails() {
   const navigate = useNavigate();
+  const { selectedSeats } = useContext(SeatContext);
 
   return (
     <Container maxWidth="md" sx={{ py: 10 }}>
@@ -24,7 +27,7 @@ function PassengerDetails() {
           </div>
 
           <div style={{ backgroundColor: "#f8fafc", padding: "20px", borderRadius: "12px", border: "1px solid #e2e8f0" }}>
-            <Typography variant="subtitle2" sx={{ fontWeight: 700, mb: 1 }}>Selected Seats: 5, 6</Typography>
+            <Typography variant="subtitle2" sx={{ fontWeight: 700, mb: 1 }}>Selected Seats:  {selectedSeats.join(", ")}</Typography>
             <Typography variant="body2" color="text.secondary">A copy of your ticket will be sent to the email provided above.</Typography>
           </div>
 

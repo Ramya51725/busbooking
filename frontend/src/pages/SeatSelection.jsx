@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useContext } from "react";
+import { SeatContext } from "../context/SeatContext";
 import { Container, Typography, Paper, Button, Box } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import SeatGrid from "../layouts/SeatsGrid";
@@ -7,8 +8,7 @@ import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 function SeatSelection() {
 
   const navigate = useNavigate();
-  const [selectedSeats, setSelectedSeats] = useState([]);
-
+const { selectedSeats, setSelectedSeats } = useContext(SeatContext);
   const getSeatPrice = (seatId) => {
     return seatId <= 10 ? 1200 : 600;
   };
@@ -87,7 +87,7 @@ function SeatSelection() {
           </div>
 
           <div>
-            <Paper className="p-8" sx={{ borderRadius: 3 }}>
+            <Paper className="p-8 " sx={{ borderRadius: 3 }}>
 
               <Typography variant="h6">Booking Summary</Typography>
 

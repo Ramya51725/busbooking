@@ -1,11 +1,12 @@
 import router from "./routes/router";
 import { RouterProvider } from "react-router-dom";
+import { SeatProvider } from "./context/SeatContext";
 
 function App() {
   return (
-    <div>
+    <SeatProvider>
       <RouterProvider router={router} />
-    </div>
+    </SeatProvider>
   );
 }
 

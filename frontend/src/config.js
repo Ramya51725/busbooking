@@ -51,7 +51,8 @@ const busData = [
     "departureTime": "01:00 PM",
     "arrivalTime": "07:30 PM",
     "duration": "6h 30m",
-    "price": 699,
+    "seater_price": 500,
+    "sleeper_price": 1100,
     "route": "Chennai → Bangalore"
   },
   {
