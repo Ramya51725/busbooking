@@ -1,49 +1,40 @@
 import React from "react";
-import { Paper,Button ,Container} from "@mui/material";
-import StarIcon from "@mui/icons-material/Star";
+import { Paper, Button, Typography, Box, Badge } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
+function BusCard({ id, type, rating, departureTime, arrivalTime, duration, busName, price, seatsAvailable, date }) {
+  const navigate = useNavigate();
 
-function BusCard({type,rating,departureTime,arrivalTime,duration,route,busName,price}) {
-
-  const navigate = useNavigate()
   return (
-    <div>
-      
-      <Container>
-      <Paper  elevation={6} className="w-200  m-10 p-10 ml-50 ">
-        <div className="flex justify-between">
-          <div>
-            <h2>{busName}</h2>
-            <p>{type}</p>
-          </div>
-          <div>
-            <p>{price}</p>
-          </div>
-        </div>
-        <div className="flex justify-between">
-          <div>
-            <h2><StarIcon sx={{ fontSize: 25, color: "gold" }} ></StarIcon>{rating}</h2>
-            <p>{departureTime}-{arrivalTime} -{duration}</p>
-          </div>
-          <div>
-            <p>per seat</p>
-          </div>
-        </div>      
-        <div className="flex justify-between">
-          <div>
-            <h2>{route}</h2>
-          </div>
-          <Button variant="contained" onClick={()=>navigate("/seats")}>
-            select seat 
-          </Button>
-        </div>         
-      </Paper>
-      </Container>
+    <Paper sx={{ p: 4, borderRadius: 3, mb: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+      <Box>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 1 }}>
+          <Typography variant="h6" fontWeight="bold">{busName}</Typography>
+          <Badge badgeContent={rating} color="success"/>
+        </Box>
+        <Typography variant="body2" color="text.secondary">{type} • {date}</Typography>
+      </Box>
 
- 
+      <Box sx={{ textAlign: 'center' }}>
+        <Typography variant="h6" fontWeight="bold">{departureTime} - {arrivalTime}</Typography>
+        <Typography variant="caption" color="text.secondary">{duration}</Typography>
+      </Box>
 
-    </div>
+      <Box sx={{ textAlign: 'right' }}>
+        <Typography variant="h5" color="primary" fontWeight="bold">₹{price}</Typography>
+        <Typography  color={seatsAvailable > 0 ? "success" : "error"} fontWeight="bold">
+          {seatsAvailable > 0 ? `${seatsAvailable} Seats Left` : "Sold Out"}
+        </Typography>
+        <Button 
+          variant="contained" 
+          disabled={seatsAvailable === 0} 
+          onClick={() => navigate(`/seats?busId=${id}`)}  
+          sx={{ mt: 1, textTransform: 'none', borderRadius: 2 }}
+        >
+          Select Seat
+        </Button>
+      </Box>
+    </Paper>
   );
 }
 

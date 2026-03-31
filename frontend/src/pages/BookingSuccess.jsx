@@ -9,17 +9,17 @@ function BookingSuccess() {
 
   const { selectedSeats } = useContext(SeatContext);
 
-const getSeatPrice = (seatId) => {
-  return seatId <= 10 ? 1200 : 600;
-};
+  const getSeatPrice = (seatId) => {
+    return seatId <= 10 ? 1200 : 600;
+  };
 
-const baseFare = selectedSeats.reduce(
-  (sum, seat) => sum + getSeatPrice(seat),
-  0
-);
+  const baseFare = selectedSeats.reduce(
+    (sum, seat) => sum + getSeatPrice(seat),
+    0,
+  );
 
-const tax = selectedSeats.length ? 150 : 0;
-const total = baseFare + tax;
+  const tax = selectedSeats.length ? 150 : 0;
+  const total = baseFare + tax;
 
   return (
     <Container maxWidth="sm" sx={{ py: 12 }}>

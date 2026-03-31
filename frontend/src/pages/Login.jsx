@@ -1,9 +1,42 @@
+import React from "react";
 import { Paper, Container, Typography, TextField, Button } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import PersonIcon from "@mui/icons-material/Person";
+import { useFormik } from "formik";
+import * as yup from "yup";
+import api from "../api";
 
 function Login() {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
+
+  const validationSchema = yup.object({
+    email: yup.string().email("Invalid email").required("Email is required"),
+    password: yup.string().required("Password is required"),
+  });
+
+  const formik = useFormik({
+    initialValues: {
+      email: "",
+      password: "",
+    },
+
+    validationSchema,
+
+    onSubmit: async (values) => {
+      try {
+        const res = await api.post("/users/login", values);
+
+        localStorage.setItem("user", JSON.stringify(res.data.data));
+
+        alert(res.data.message);
+
+        navigate("/"); 
+
+      } catch (err) {
+        alert(err.response?.data?.message || "Login failed");
+      }
+    },
+  });
 
   return (
     <Container maxWidth="sm" sx={{ padding: 7 }}>
@@ -31,56 +64,72 @@ function Login() {
         >
           <PersonIcon />
         </div>
-        <Typography variant="h4" className="font-bold mb-2">
-          Welcome Back
-        </Typography>
+
+        <Typography variant="h4">Welcome Back</Typography>
         <Typography color="text.secondary" sx={{ mb: 4 }}>
           Login to manage your bus bookings
         </Typography>
 
-        <div
-          style={{
-            width: "100%",
-            display: "flex",
-            flexDirection: "column",
-            gap: "1.5rem",
-          }}
-        >
-          <TextField label="Email Address" variant="outlined" fullWidth />
-          <TextField
-            label="Password"
-            type="password"
-            variant="outlined"
-          />
-
-{/* it has color from the button in containt */}
-
-          <Button
-            variant="contained"
-            size="large"
-            sx={{ py: 1.5, fontSize: "18px", borderRadius: "12px" }}
+        <form onSubmit={formik.handleSubmit} style={{ width: "100%" }}>
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              gap: "1.5rem",
+            }}
           >
-            Sign In
-          </Button>
+            <TextField
+              label="Email Address"
+              name="email"
+              value={formik.values.email}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              fullWidth
+            />
+            {formik.errors.email && formik.touched.email && (
+              <Typography color="error">{formik.errors.email}</Typography>
+            )}
 
-          <Typography  color="text.secondary" align="center">
-            Don't have an account?
-            <span
-              style={{
-                fontWeight: 600,
-                cursor: "pointer",
+            <TextField
+              label="Password"
+              type="password"
+              name="password"
+              value={formik.values.password}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              fullWidth
+            />
+            {formik.errors.password && formik.touched.password && (
+              <Typography color="error">{formik.errors.password}</Typography>
+            )}
+
+            <Button
+              type="submit"
+              variant="contained"
+              size="large"
+              sx={{
+                py: 1.5,
+                fontSize: "18px",
+                borderRadius: "12px",
               }}
-              onClick={() => navigate("/register")}
             >
-              Register
-            </span>
-          </Typography>
-        </div>
+              Sign In
+            </Button>
+
+            <Typography color="text.secondary" align="center">
+              Don't have an account?
+              <span
+                style={{ fontWeight: 600, cursor: "pointer" }}
+                onClick={() => navigate("/register")}
+              >
+                {" "}Register
+              </span>
+            </Typography>
+          </div>
+        </form>
       </Paper>
     </Container>
   );
 }
 
 export default Login;
-
-
