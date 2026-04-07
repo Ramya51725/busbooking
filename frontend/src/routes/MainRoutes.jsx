@@ -8,13 +8,15 @@ import SearchResult from "../pages/SearchResult";
 import SeatSelection from "../pages/SeatSelection";
 import PassengerDetails from "../pages/PassengerDetails";
 import BookingSuccess from "../pages/BookingSuccess";
+import ProtectedRoute from "../components/ProtectedRoute";
+import Profile from "../pages/profile";
 
 const MainRoutes = {
   path: "/",
   element: <MainLayout />,
   children: [
     {
-      index: true,     
+      index: true,
       element: <Home />,
     },
     {
@@ -22,29 +24,40 @@ const MainRoutes = {
       element: <Login />,
     },
     {
-      path: "mybooking",
-      element: <MyBookings />,
-    },
-    {
       path: "register",
       element: <Register />,
     },
+
+    
     {
-      path: "searchresult",
-      element: <SearchResult />,
+      element: <ProtectedRoute />,
+      children: [
+        {
+          path: "mybooking",
+          element: <MyBookings />,
+        },
+        {
+          path: "searchresult",
+          element: <SearchResult />,
+        },
+        {
+          path: "seats",
+          element: <SeatSelection />,
+        },
+        {
+          path: "passenger",
+          element: <PassengerDetails />,
+        },
+        {
+          path: "success",
+          element: <BookingSuccess />,
+        },
+        {
+          path : "profile",
+          element : <Profile/>
+        }
+      ],
     },
-    {
-      path :"seats",
-      element : <SeatSelection/>
-    },
-    {
-      path : "passenger",
-      element :<PassengerDetails/>
-    },
-    {
-      path :"success",
-      element : <BookingSuccess/>
-    }
   ],
 };
 

@@ -17,12 +17,9 @@ function SearchResult() {
     const [buses, setBuses] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
-    console.log("SearchResult component loaded");
     useEffect(() => {
-        console.log("useEffect triggered");
 
         const fetchBuses = async () => {
-            console.log("Calling API...");
             setLoading(true);
 
             try {

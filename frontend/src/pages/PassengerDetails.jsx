@@ -1,56 +1,221 @@
-import { Container, Paper, TextField, Button, Typography } from "@mui/material";
+import React, { useState, useContext, useEffect } from "react";
+import {
+  Container,
+  Paper,
+  TextField,
+  Button,
+  Typography,
+  Box,
+  MenuItem,
+} from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import { useContext } from "react";
 import { SeatContext } from "../context/SeatContext";
+import api from "../api";
+import { AuthContext } from "../context/AuthContext";
+
+
 
 function PassengerDetails() {
   const navigate = useNavigate();
-  const { selectedSeats } = useContext(SeatContext);
+  const { user } = useContext(AuthContext);
+  const { setSelectedSeats, boardingPoint, droppingPoint } = useContext(SeatContext);
+
+  const selectedBus = JSON.parse(localStorage.getItem("selectedBus") || "null");
+  const selectedSeats = JSON.parse(
+    localStorage.getItem("selectedSeats") || "[]",
+  );
+
+
+
+  const boarding = boardingPoint || localStorage.getItem("boardingPoint");
+  console.log("boarding" , boarding)
+
+
+  const dropping = droppingPoint || localStorage.getItem("droppingPoint") 
+  console.log("dropping" , dropping)
+  console.log("user id", user.id)
+
+
+  const [passengers, setPassengers] = useState([]);
+  const [contact, setContact] = useState({ email: "", phone: "" });
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (!user || !user.email) {
+      return navigate("/login");
+    }
+
+    if (!selectedBus || selectedSeats.length === 0) {
+      return navigate("/");
+    }
+
+    setPassengers(
+      selectedSeats.map((seat) => ({
+        name: "",
+        age: "",
+        gender: "Male",
+        seatNumber: seat,
+      })),
+    );
+
+    setContact((prev) => ({ ...prev, email: user.email }));
+  }, [user]);
+
+  const handleBooking = async () => {
+    if (
+      passengers.some(
+        (p) => !p.name || !p.age || !contact.email || !contact.phone,
+      )
+    ) {
+      return alert("Fill all details");
+    }
+
+    try {
+      const payload = {
+        busId: selectedBus._id,
+        userId: user.id,
+        busName : selectedBus.busName,
+        passengerDetails: passengers,
+        contactDetails: contact,
+        totalAmount: selectedSeats.length * selectedBus.price + 150,
+        boardingPoint : boarding,
+        droppingPoint  : dropping,
+        travelDate: selectedBus.date,
+      };
+
+      const res = await api.post("/bookings/", payload);
+
+      if (res.status === 201) {
+
+        await api.patch("/buses/", {
+          busId: selectedBus._id,
+          seats: selectedSeats,
+          action : "add"
+        });
+
+        alert(res.data.message);
+        localStorage.setItem("successDetail", JSON.stringify(res.data));
+
+        setSelectedSeats([]);
+        navigate("/success");
+      }
+
+    } catch (err) {
+
+      alert(err.response?.data?.message || err.message || "Booking failed");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
-    <Container maxWidth="md" sx={{ py: 10 }}>
-      <Paper className="p-8 search-card rounded-xl" sx={{ borderRadius: "24px" }}>
-        <Typography variant="h4" className="font-bold mb-2">Passenger Details</Typography>
-        <Typography variant="body1" color="text.secondary" sx={{ mb: 6 }}>
-          Please provide the details for the primary passenger.
+    <Container maxWidth="md" sx={{ py: 6 }}>
+      <Typography variant="h4" fontWeight="bold" gutterBottom>
+        Passenger Details
+      </Typography>
+
+      {passengers.map((p, i) => (
+        <Paper key={p.seatNumber} sx={{ p: 3, mb: 3, borderRadius: 3 }}>
+          <Typography variant="h6" sx={{ mb: 2 }}>
+            Seat {p.seatNumber}
+          </Typography>
+
+          <Box sx={{ display: "flex", gap: 2 }}>
+            <TextField
+              label="Name"
+              fullWidth
+              value={p.name}
+              onChange={(e) => {
+                const up = [...passengers];
+                up[i].name = e.target.value;
+                setPassengers(up);
+              }}
+            />
+
+            <TextField
+              label="Age"
+              type="number"
+              sx={{ width: 100 }}
+              value={p.age}
+              onChange={(e) => {
+                const up = [...passengers];
+                up[i].age = e.target.value;
+                setPassengers(up);
+              }}
+            />
+
+            <TextField
+              select
+              label="Gender"
+              sx={{ width: 120 }}
+              value={p.gender}
+              onChange={(e) => {
+                const up = [...passengers];
+                up[i].gender = e.target.value;
+                setPassengers(up);
+              }}
+            >
+              <MenuItem value="Male">Male</MenuItem>
+              <MenuItem value="Female">Female</MenuItem>
+            </TextField>
+          </Box>
+        </Paper>
+      ))}
+
+      <Paper sx={{ p: 4, mb: 3, borderRadius: 3 }}>
+        <Typography variant="h6" sx={{ mb: 2 }}>
+          Contact Info
         </Typography>
 
-        <div className="flex flex-col gap-6" style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-          <div className="grid md:grid-cols-2 gap-4">
-            <TextField label="Full Name" variant="outlined" fullWidth />
-            <TextField label="Email Address" variant="outlined" fullWidth />
-          </div>
+        <Box sx={{ display: "flex", gap: 2 }}>
+          <TextField
+            label="Email"
+            fullWidth
+            value={contact.email}
+            onChange={(e) => setContact({ ...contact, email: e.target.value })}
+          />
 
-          <div className="grid md:grid-cols-2 gap-4">
-            <TextField label="Phone Number" variant="outlined" fullWidth />
-            <TextField label="Age" variant="outlined" type="number" fullWidth />
-          </div>
+          <TextField
+            label="Phone"
+            fullWidth
+            value={contact.phone}
+            onChange={(e) => setContact({ ...contact, phone: e.target.value })}
+          />
+        </Box>
+      </Paper>
 
-          <div style={{ backgroundColor: "#f8fafc", padding: "20px", borderRadius: "12px", border: "1px solid #e2e8f0" }}>
-            <Typography variant="subtitle2" sx={{ fontWeight: 700, mb: 1 }}>Selected Seats:  {selectedSeats.join(", ")}</Typography>
-            <Typography variant="body2" color="text.secondary">A copy of your ticket will be sent to the email provided above.</Typography>
-          </div>
+      <Paper
+        sx={{
+          p: 3,
+          borderRadius: 3,
+          bgcolor: "#1e293b",
+          color: "white",
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}
+      >
+        <Box>
+          <Typography variant="h5">
+            Total: ₹ {selectedSeats.length * selectedBus?.price + 150}
+          </Typography>
+          <Typography variant="caption" sx={{ opacity: 0.8 }}>
+            Incl. taxes & fees
+          </Typography>
+        </Box>
 
-          <Button
-            variant="contained"
-            size="large"
-            onClick={() => navigate("/success")}
-            sx={{
-              py: 2,
-              fontSize: "1.1rem",
-              borderRadius: "12px",
-              background: "linear-gradient(135deg, #2563eb 0%, #1e40af 100%)",
-              boxShadow: "0 10px 15px -3px rgba(37, 99, 235, 0.2)"
-            }}
-          >
-            Pay & Confirm Booking
-          </Button>
-        </div>
+        <Button
+          variant="contained"
+          color="success"
+          size="large"
+          onClick={handleBooking}
+          disabled={loading}
+        >
+          Pay & Book Now
+        </Button>
       </Paper>
     </Container>
   );
 }
 
 export default PassengerDetails;
-
-

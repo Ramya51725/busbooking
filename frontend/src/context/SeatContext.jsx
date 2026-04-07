@@ -8,11 +8,6 @@ export function SeatProvider({ children }) {
   const [boardingPoint, setBoardingPoint] = useState("");
   const [droppingPoint, setDroppingPoint] = useState("");
 
-  const resetSelection = () => {
-    setSelectedSeats([]);
-    setBoardingPoint("");
-    setDroppingPoint("");
-  };
 
   return (
     <SeatContext.Provider value={{
@@ -24,7 +19,6 @@ export function SeatProvider({ children }) {
       setBoardingPoint,
       droppingPoint,
       setDroppingPoint,
-      resetSelection
     }}>
       {children}
     </SeatContext.Provider>

@@ -12,6 +12,7 @@ function Home() {
   const today = new Date().toISOString().split("T")[0];
 
   const handleSearch = () => {
+      
     if (!from || !to) {
       alert("Please enter both 'From' and 'To' locations.");
       return;

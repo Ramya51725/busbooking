@@ -1,27 +1,23 @@
-import React, { useEffect, useState } from "react";
-import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
-import { Container, Typography, Box, Button, Avatar, Grid, Divider, Menu, MenuItem, ListItemIcon } from "@mui/material";
+import React, {  useState } from "react";
+import { Link, Outlet, useNavigate } from "react-router-dom";
+import { Container, Typography, Box, Button, Avatar, Divider, Menu, MenuItem, ListItemIcon } from "@mui/material";
 import DirectionsBusIcon from '@mui/icons-material/DirectionsBus';
 import ConfirmationNumberIcon from '@mui/icons-material/ConfirmationNumber';
 import LoginIcon from '@mui/icons-material/Login';
 import LogoutIcon from '@mui/icons-material/Logout';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 
+
+
 function MainLayout() {
-  const location = useLocation();
-  // It gives you information about the current URL/page
   const navigate = useNavigate();
 
-  const [user, setUser] = useState(null);
+  const storedUser = localStorage.getItem("user");
+  const user = storedUser ? JSON.parse(storedUser) : null;
+
+  console.log("user", user?.name);
 
   const [anchorEl, setAnchorEl] = useState(null);
-
-  useEffect(() => {
-    const storedUser = localStorage.getItem("user");
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
-    }
-  }, [location.pathname]); // Re-check on navigationevery 
 
 
   const handleMenuOpen = (event) => {
@@ -35,7 +31,6 @@ function MainLayout() {
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
-    setUser(null);
     handleMenuClose();
     navigate("/login");
   };
@@ -132,7 +127,7 @@ function MainLayout() {
         <Outlet />
       </main>
 
-      <footer className="bg-[#111827] py-6 px-4">
+<footer className="bg-[#111827] py-6 px-4">
         <Container maxWidth="lg">
           <Box
             sx={{
@@ -212,8 +207,11 @@ function MainLayout() {
           </Box>
         </Container>
       </footer>
-    </div>
+          </div>
   );
 }
 
 export default MainLayout;
+
+
+

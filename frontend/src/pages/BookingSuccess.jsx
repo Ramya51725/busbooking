@@ -1,25 +1,14 @@
 import { Container, Paper, Button, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
-import { useContext } from "react";
-import { SeatContext } from "../context/SeatContext";
+
 
 function BookingSuccess() {
   const navigate = useNavigate();
+  const bookingData = JSON.parse(localStorage.getItem("successDetail"))
+  console.log("bookingdata" , bookingData)
 
-  const { selectedSeats } = useContext(SeatContext);
 
-  const getSeatPrice = (seatId) => {
-    return seatId <= 10 ? 1200 : 600;
-  };
-
-  const baseFare = selectedSeats.reduce(
-    (sum, seat) => sum + getSeatPrice(seat),
-    0,
-  );
-
-  const tax = selectedSeats.length ? 150 : 0;
-  const total = baseFare + tax;
 
   return (
     <Container maxWidth="sm" sx={{ py: 12 }}>
@@ -69,7 +58,7 @@ function BookingSuccess() {
               Booking ID
             </Typography>
             <Typography variant="body2" fontWeight={700}>
-              #BT-992831
+             {bookingData.booking.data.bookingId}
             </Typography>
           </div>
           <div className="flex justify-between">
@@ -77,7 +66,7 @@ function BookingSuccess() {
               Total Paid
             </Typography>
             <Typography variant="body2" fontWeight={700} color="primary">
-              ₹{total}
+              ₹{bookingData.booking.data.totalAmount}
             </Typography>
           </div>
         </div>
