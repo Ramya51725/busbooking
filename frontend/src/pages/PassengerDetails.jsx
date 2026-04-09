@@ -13,28 +13,23 @@ import { SeatContext } from "../context/SeatContext";
 import api from "../api";
 import { AuthContext } from "../context/AuthContext";
 
-
-
 function PassengerDetails() {
   const navigate = useNavigate();
   const { user } = useContext(AuthContext);
-  const { setSelectedSeats, boardingPoint, droppingPoint } = useContext(SeatContext);
+  const { setSelectedSeats, boardingPoint, droppingPoint } =
+    useContext(SeatContext);
 
   const selectedBus = JSON.parse(localStorage.getItem("selectedBus") || "null");
   const selectedSeats = JSON.parse(
     localStorage.getItem("selectedSeats") || "[]",
   );
 
-
-
   const boarding = boardingPoint || localStorage.getItem("boardingPoint");
-  console.log("boarding" , boarding)
+  console.log("boarding", boarding);
 
-
-  const dropping = droppingPoint || localStorage.getItem("droppingPoint") 
-  console.log("dropping" , dropping)
-  console.log("user id", user.id)
-
+  const dropping = droppingPoint || localStorage.getItem("droppingPoint");
+  console.log("dropping", dropping);
+  console.log("user id", user.id);
 
   const [passengers, setPassengers] = useState([]);
   const [contact, setContact] = useState({ email: "", phone: "" });
@@ -74,23 +69,22 @@ function PassengerDetails() {
       const payload = {
         busId: selectedBus._id,
         userId: user.id,
-        busName : selectedBus.busName,
+        busName: selectedBus.busName,
         passengerDetails: passengers,
         contactDetails: contact,
         totalAmount: selectedSeats.length * selectedBus.price + 150,
-        boardingPoint : boarding,
-        droppingPoint  : dropping,
+        boardingPoint: boarding,
+        droppingPoint: dropping,
         travelDate: selectedBus.date,
       };
 
       const res = await api.post("/bookings/", payload);
 
       if (res.status === 201) {
-
         await api.patch("/buses/", {
           busId: selectedBus._id,
           seats: selectedSeats,
-          action : "add"
+          action: "add",
         });
 
         alert(res.data.message);
@@ -99,9 +93,7 @@ function PassengerDetails() {
         setSelectedSeats([]);
         navigate("/success");
       }
-
     } catch (err) {
-
       alert(err.response?.data?.message || err.message || "Booking failed");
     } finally {
       setLoading(false);

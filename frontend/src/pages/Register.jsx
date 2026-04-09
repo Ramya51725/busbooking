@@ -7,16 +7,20 @@ import * as yup from "yup";
 import api from "../api";
 
 function Register() {
-  
   const navigate = useNavigate();
 
   const validationSchema = yup.object({
     name: yup.string().required("Name is required"),
     email: yup.string().email("Invalid email").required("Email is required"),
-    password: yup.string().min(8, "Minimum 8 characters").required("Password is required"),
-    confirmPassword: yup.string().oneOf([yup.ref("password")], "Passwords must match").required("Confirm password"),
+    password: yup
+      .string()
+      .min(8, "Minimum 8 characters")
+      .required("Password is required"),
+    confirmPassword: yup
+      .string()
+      .oneOf([yup.ref("password")], "Passwords must match")
+      .required("Confirm password"),
   });
-
 
   const formik = useFormik({
     initialValues: {
@@ -36,7 +40,6 @@ function Register() {
 
         alert(res.data.message);
         navigate("/login");
-
       } catch (err) {
         alert(err.response?.data?.message || "Error");
       }
@@ -77,8 +80,9 @@ function Register() {
         </Typography>
 
         <form onSubmit={formik.handleSubmit} style={{ width: "100%" }}>
-          <div style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
-            
+          <div
+            style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}
+          >
             <TextField
               label="Full Name"
               name="name"
@@ -125,11 +129,12 @@ function Register() {
               onBlur={formik.handleBlur}
               fullWidth
             />
-            {formik.errors.confirmPassword && formik.touched.confirmPassword && (
-              <Typography color="error">
-                {formik.errors.confirmPassword}
-              </Typography>
-            )}
+            {formik.errors.confirmPassword &&
+              formik.touched.confirmPassword && (
+                <Typography color="error">
+                  {formik.errors.confirmPassword}
+                </Typography>
+              )}
 
             <Button
               type="submit"
@@ -139,8 +144,7 @@ function Register() {
                 py: 1.5,
                 fontSize: "18px",
                 borderRadius: "12px",
-                background:
-                  "linear-gradient(135deg, #f59e0b 0%, #d97706 100%)",
+                background: "linear-gradient(135deg, #f59e0b 0%, #d97706 100%)",
               }}
             >
               Create Account
@@ -152,10 +156,10 @@ function Register() {
                 style={{ fontWeight: 600, cursor: "pointer" }}
                 onClick={() => navigate("/login")}
               >
-                {" "}Login
+                {" "}
+                Login
               </span>
             </Typography>
-
           </div>
         </form>
       </Paper>

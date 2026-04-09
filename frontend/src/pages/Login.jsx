@@ -4,15 +4,22 @@ import { useNavigate } from "react-router-dom";
 import PersonIcon from "@mui/icons-material/Person";
 import { useFormik } from "formik";
 import * as yup from "yup";
+import { useContext } from "react";
+import { AuthContext } from "../context/AuthContext";
 import api from "../api";
+
 
 function Login() {
   const navigate = useNavigate();
+
+  const { setUser, setToken } = useContext(AuthContext);
 
   const validationSchema = yup.object({
     email: yup.string().email("Invalid email").required("Email is required"),
     password: yup.string().required("Password is required"),
   });
+
+  
 
   const formik = useFormik({
     initialValues: {
@@ -26,16 +33,28 @@ function Login() {
       try {
         const res = await api.post("/users/login", values);
 
-        localStorage.setItem("token", res.data.token);
-        localStorage.setItem("user", JSON.stringify(res.data.data));
+        const token = res.data.token;
+        const user = res.data.data;
+
+        localStorage.setItem("token", token);
+        localStorage.setItem("user", JSON.stringify(user));
+
+        setToken(token);
+        setUser(user);
+
         alert(res.data.message);
 
-        navigate("/"); 
+        if (user.role === "admin") {
+          navigate("/admin/dashboard");
+        } else {
+          navigate("/");
+        }
 
       } catch (err) {
         alert(err.response?.data?.message || "Login failed");
       }
-    },
+    }
+
   });
 
   return (

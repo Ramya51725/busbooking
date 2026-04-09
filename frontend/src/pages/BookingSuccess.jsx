@@ -2,13 +2,10 @@ import { Container, Paper, Button, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 
-
 function BookingSuccess() {
   const navigate = useNavigate();
-  const bookingData = JSON.parse(localStorage.getItem("successDetail"))
-  console.log("bookingdata" , bookingData)
-
-
+  const bookingData = JSON.parse(localStorage.getItem("successDetail"));
+  console.log("bookingdata", bookingData);
 
   return (
     <Container maxWidth="sm" sx={{ py: 12 }}>
@@ -58,7 +55,7 @@ function BookingSuccess() {
               Booking ID
             </Typography>
             <Typography variant="body2" fontWeight={700}>
-             {bookingData.booking.data.bookingId}
+              {bookingData.booking.data.bookingId}
             </Typography>
           </div>
           <div className="flex justify-between">
