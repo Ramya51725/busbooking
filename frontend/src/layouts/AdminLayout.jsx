@@ -34,12 +34,10 @@ function AdminLayout() {
   return (
     <div className="min-h-screen flex flex-col">
       
-      {/* ✅ HEADER (Top Navbar) */}
       <header className="bg-white border-b">
         <Container maxWidth="lg">
           <nav className="flex justify-between items-center h-20">
 
-            {/* LEFT SIDE */}
             <Box className="flex items-center gap-2">
               <Box className="bg-blue-600 p-2 rounded-xl">
                 <AdminPanelSettingsIcon sx={{ color: "white", fontSize: 30 }} />
@@ -49,7 +47,6 @@ function AdminLayout() {
               </Typography>
             </Box>
 
-            {/* RIGHT SIDE */}
             <Box
               sx={{ display: "flex", alignItems: "center", gap: 2, cursor: "pointer" }}
               onClick={handleMenuOpen}
@@ -63,7 +60,6 @@ function AdminLayout() {
               </Typography>
             </Box>
 
-            {/* MENU */}
             <Menu
               anchorEl={anchorEl}
               open={Boolean(anchorEl)}
@@ -90,12 +86,10 @@ function AdminLayout() {
         </Container>
       </header>
 
-      {/* ✅ MAIN CONTENT */}
       <main className="flex-grow bg-[#f8fafc]">
         <Outlet />
       </main>
 
-      {/* ✅ FOOTER */}
       <footer className="bg-[#111827] py-6 px-4">
         <Container maxWidth="lg">
           <Box textAlign="center">
